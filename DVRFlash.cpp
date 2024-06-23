@@ -714,7 +714,7 @@ int main (int argc, char *argv[])
 	mbuffer    = NULL;
 	scsi       = NULL;
 
-	while ((i = getopt (argc, argv, "bfhksvy01234567?")) != -1)
+	while ((i = getopt (argc, argv, "bfhksvy012345678?")) != -1)
 		switch (i)
 	{
 		case 'y':		// Pass 'Yes' to all prompts
