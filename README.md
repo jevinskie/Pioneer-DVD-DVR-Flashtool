@@ -1,3 +1,7 @@
+pioneer-dvd-dvr-flash-utils
+=======================================
+Flash utilities for Pioneer DVD and DVR drives, derived from [DVRFlash](https://github.com/rpc1dev/DVRFlash) with the original README below. Linux only for now.
+
 This is DVRFlash by Agent Smith, et al.
 =======================================
 
