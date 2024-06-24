@@ -24,10 +24,10 @@
 **  Link with standard C libraries.
 **/
 
-#include <limits.h> /* INT_MAX ... */
-#include <stdio.h> /* FILE ... */
-#include <stdlib.h> /* calloc ... */
-#include <string.h> /* memset ... */
+#include <climits> /* INT_MAX ... */
+#include <cstdio> /* FILE ... */
+#include <cstdlib> /* calloc ... */
+#include <cstring> /* memset ... */
 
 /**
 **  Link with the *.c* of ../plscsi/.

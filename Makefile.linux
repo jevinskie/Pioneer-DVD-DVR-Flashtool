@@ -1,5 +1,0 @@
-dvrflash: *.c*
-	g++ -O3 -o dvrflash -Wall -Wextra *.c* $(CFLAGS) $(CXXFLAGS) $(LDFLAGS) 
-
-dvrflash-clang: *.c*
-	clang++ -O3 -o dvrflash-clang -Wall -Wextra *.c* $(CFLAGS) $(CXXFLAGS) $(LDFLAGS) 

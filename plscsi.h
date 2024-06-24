@@ -11,8 +11,7 @@
 **  Compile at most once.
 **/
 
-#ifndef PLSCSI_H
-#define PLSCSI_H PLSCSI_H
+#pragma once
 
 /**
 **  Link as C, not C++.
@@ -25,37 +24,6 @@ extern "C" {
 /**
 **  Link with standard C libraries.
 **/
-
-#if 0
-#include <stdio.h> /* FILE ... */
-#endif
-
-/**
-**  Name what changes for DOS because int's there hold 16 bits, not 32.
-**/
-
-#ifdef __MSDOS__
-
-typedef unsigned char EXIT_INT;
-typedef long INT;
-typedef unsigned long UINT;
-
-#define INT_M1 (~ (INT) 0)
-#define INT_MOST_NEG (1L << 31)
-#define INT_MOST_POS (~INT_MOST_NEG)
-
-#define CALLOC farcalloc
-
-#define FREAD wideFRead
-#define FWRITE wideFWrite
-#define MEMCMP wideMemCmp
-#define MEMMOVE wideMemMove
-#define MEMSET wideMemSet
-
-#define TO_VOID_P wideToVoidP
-#define TO_INT wideToInt
-
-#else
 
 typedef int EXIT_INT;
 typedef int INT;
@@ -75,8 +43,6 @@ typedef unsigned int UINT;
 
 #define TO_VOID_P(II) ((void *) (II))
 #define TO_INT(VO) ((INT) (VO))
-
-#endif
 
 /**
 **  List some different ways to copy data.
@@ -99,43 +65,13 @@ typedef unsigned int UINT;
 **  Choose which .cpp to link.
 **/
 
-#ifdef __APPLE__
-#define STUC STUC
-#endif
-
-#ifndef _WIN32
-#ifndef __MSDOS__
-#ifndef __APPLE__
+#ifdef __linux__
 #define SGIO SGIO
-#endif
-#endif
-#endif
-
-#ifdef _WIN32
-#define WINASPI WINASPI
-#define SPTX SPTX
-// #define SGIO SGIO
+#else
+#error only Linux supported, sorry
 #endif
 
-#ifdef __MSDOS__
-#define DOSASPI DOSASPI
-#endif
 
-/**
-**  Often treat DOSASPI and WINASPI the same.
-**/
-
-#ifdef DOSASPI
-#ifndef XXXASPI
-#define XXXASPI XXXASPI
-#endif
-#endif
-
-#ifdef WINASPI
-#ifndef XXXASPI
-#define XXXASPI XXXASPI
-#endif
-#endif
 
 /**
 **  Name some struct's.
@@ -149,66 +85,6 @@ typedef struct Sgio Sgio;
 typedef struct Sptx Sptx;
 typedef struct Stuc Stuc;
 
-/**
-**  Link with "dosaspi.cpp" or "winaspi.cpp".
-**/
-
-#ifdef XXXASPI
-extern Aspi * newAspi(void);
-extern void aspiSetErr(Aspi *, FILE *);
-extern int aspiOpen(Aspi *, char const *);
-extern int aspiLimitSense(Aspi *, int);
-#ifdef WINASPI
-extern int aspiLimitSeconds(Aspi *, INT, INT);
-#endif
-extern INT aspiSay(Aspi *, char const *, int, char *, INT, int);
-extern INT aspiGetLength(Aspi *, INT);
-extern int aspiGetSense(Aspi *, char *, int, int);
-extern int aspiReadName(Aspi *, char *, int);
-extern int aspiSwallowArg(Aspi *, char const *);
-#endif
-
-/**
-**  Link with "cl.cpp".
-**/
-
-extern CommandLine * newCommandLine(void);
-extern void clSet(CommandLine *, char const * const *, int);
-extern void clSetFromString(CommandLine *, char const *);
-extern char const * clPeek(CommandLine *);
-extern char const * clRead(CommandLine *);
-extern int clReadSwitch(CommandLine *);
-extern int clReadComment(CommandLine *);
-extern INT clReadInt(CommandLine *);
-extern int clReadXX(CommandLine *);
-
-/**
-**  Link with "scl.cpp".
-**/
-
-extern ScsiCommandLine * newScsiCommandLine(void);
-
-extern void sclSet(ScsiCommandLine *, char const * const *, int);
-extern void sclSetFromString(ScsiCommandLine *, char const *);
-extern int sclGetHelpBit(ScsiCommandLine *);
-extern int sclGetVerboseBit(ScsiCommandLine *);
-extern int sclGetYesBit(ScsiCommandLine *);
-extern int sclGetNoBit(ScsiCommandLine *);
-extern int sclParse(ScsiCommandLine *);
-
-extern void sclDataPrint(FILE *, char const *, int);
-extern void sclInquiryPrintln(FILE *, char const *, int);
-extern void sclSensePrintln(FILE *, char const *, int);
-
-extern void sclGuess(ScsiCommandLine *);
-extern int sclAllotData(ScsiCommandLine *);
-extern int sclFrom(ScsiCommandLine *);
-extern int sclTo(ScsiCommandLine *);
-extern int sclCompare(ScsiCommandLine *, int);
-extern int sclLimitSay(ScsiCommandLine *);
-extern INT sclSay(ScsiCommandLine *);
-extern int sclOpenNext(ScsiCommandLine *);
-extern void sclClose(ScsiCommandLine *);
 
 /**
 **  Link with "scsi.cpp".
@@ -227,26 +103,12 @@ extern int scsiReadName(Scsi *, char *, int);
 extern int scsiSwallowArg(Scsi *, char const *);
 
 /**
-**  Link with "stuc.cpp".
-**/
-
-#ifdef STUC
-extern Stuc * newStuc(void);
-extern void stucSetErr(Stuc *, FILE *);
-extern void stucClose(Stuc *);
-extern int stucOpen(Stuc *, char const *);
-extern int stucLimitSense(Stuc *, int);
-extern int stucLimitSeconds(Stuc *, INT, INT);
-extern INT stucSay(Stuc *, char const *, int, char *, INT, int);
-extern INT stucGetLength(Stuc *, INT);
-extern int stucGetSense(Stuc *, char *, int, int);
-extern int stucReadName(Stuc *, char *, int);
-extern int stucSwallowArg(Stuc *, char const *);
-#endif
-
-/**
 **  Link with "sgio.cpp".
 **/
+
+#ifndef SGIO
+#error must use SGIO
+#endif
 
 #ifdef SGIO
 extern Sgio * newSgio(void);
@@ -263,47 +125,11 @@ extern int sgioSwallowArg(Sgio *, char const *);
 #endif
 
 /**
-**  Link with "sptx.cpp".
-**/
-
-#ifdef SPTX
-extern Sptx * newSptx(int);
-extern void sptxSetErr(Sptx *, FILE *);
-extern void sptxClose(Sptx *);
-extern int sptxOpen(Sptx *, char const *);
-extern int sptxLimitSense(Sptx *, int);
-extern int sptxLimitSeconds(Sptx *, int, int);
-extern int sptxSay(Sptx *, char const *, int, char *, int, int);
-extern int sptxGetLength(Sptx *, int);
-extern int sptxGetSense(Sptx *, char *, int, int);
-extern int sptxReadName(Sptx *, char *, int);
-extern int sptxSwallowArg(Sptx *, char const *);
-#endif
-
-/**
-**  Link with "wideint.cpp".
-**/
-
-extern UINT wideFRead(void *, UINT, UINT, FILE *);
-extern UINT wideFWrite(void const *, UINT, UINT, FILE *);
-extern int wideMemCmp(void *, void *, UINT);
-extern void * wideMemMove(void *, void *, UINT);
-extern void * wideMemSet(void *, char, UINT);
-extern INT wideToInt(const void *);
-extern void * wideToVoidP(INT);
-
-/**
 **  Finish linking as C, not C++.
 **/
 
 #ifdef __cplusplus
 }
 #endif
-
-/**
-**  Finish compiling at most once.
-**/
-
-#endif /* PLSCSI_H */
 
 /* end of file */

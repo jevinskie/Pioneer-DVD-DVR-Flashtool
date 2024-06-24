@@ -1,2 +1,0 @@
-dvrflash: *.c*
-	g++ -static -o dvrflash -Wall -Wno-format -Wno-stringop-truncation -Wno-write-strings -Wno-sign-compare *.c*

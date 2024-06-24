@@ -1,53 +1,56 @@
 /**
- **  DVRFlash (based on fPLScsi)
+ **  pioneer-dvd-dvr-flash-utils (based on DVRFlash (based on fPLScsi))
  **
  **  Our own little replacement of the Pioneer DVR-1xx Flasher :þ
+ **  With some mods from jevinskie like dumping existing flash.
  **
  **/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include "getopt.h"
+#undef NDEBUG
+#include <cassert>
+#include <cinttypes>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <mutex>
+#include <getopt.h>
+#include <unistd.h>
+
+#include <fmt/format.h>
+
 #include "plscsi.h"
 
-// Define our msleep function
-#ifdef _WIN32
-#include <Windows.h>
-#define msleep(msecs) Sleep(msecs)
-#else
-#include <unistd.h>
-#define	msleep(msecs) usleep(1000*msecs)
-#endif
+using u8 = uint8_t;
+using u16 = uint16_t;
+using u32 = uint32_t;
+using u64 = uint64_t;
 
-#if __APPLE__
-#include <inttypes.h>
-#define u8  uint8_t
-#define u16 uint16_t
-#define u32 uint32_t
-#else // ! __APPLE__
-#ifndef u8
-#define u8 unsigned char
-#endif
-#ifndef u16
-#define u16 unsigned short
-#endif
-#ifndef u32
-#define u32 unsigned long
-#endif
-#endif // __APPLE__
+using mseconds_t = useconds_t;
+static_assert(sizeof(useconds_t) == sizeof(uint32_t));
+
+[[gnu::always_inline]] static const void msleep(mseconds_t msec) {
+	const auto msec_64 = static_cast<uint64_t>(msec) * 1'000;
+	assert(msec_64 <= UINT32_MAX);
+	usleep(msec * 1'000);
+}
+
+static FILE * NULL_FD(void) {
+	static FILE *null_fd = nullptr;
+	static std::once_flag inited{};
+	std::call_once(inited, [&]() {
+        null_fd = fopen("/dev/null", "w");
+		assert(null_fd != nullptr);
+    });
+	return null_fd;
+}
 
 // Scsi parameters
 #define SENSE_LENGTH             0xE			/* offsetof SK ASC ASCQ < xE */
 #define MAX_SECONDS              300			/* negative means max */
 
-// Some fixes for windows
-#if (_WIN32 || __MSDOS__)
-#define NULL_FD fopen("NUL", "w")
-#else
-#define NULL_FD fopen("/dev/null", "w")
-#endif
+
 
 #define MAX_SIZE		0x00200000  // Maximum Firmware file size
 #define FIRM_SIZE		0x00100000	// Standard Firmware size (Gen & Kern)
@@ -847,7 +850,7 @@ int main (int argc, char *argv[])
 		printf("Device parameter was not given, detecting all DVR drives:\n");
 
 		// Need to disable stderr on device detection for windows
-		scsiSetErr(scsi, NULL_FD);
+		scsiSetErr(scsi, NULL_FD());
 		for ( ; ; )
 		{
 			if (scsiReadName(scsi, devname, sizeof(devname)) < 0) break;
