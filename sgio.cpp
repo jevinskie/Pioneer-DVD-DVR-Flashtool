@@ -10,12 +10,12 @@
 **  Link with standard C libraries.
 **/
 
-#include <errno.h>  /* errno ... */
-#include <limits.h> /* INT_MAX ... */
-#include <stddef.h> /* offsetof ... */
-#include <stdio.h>  /* FILE ... */
-#include <stdlib.h> /* calloc ... */
-#include <string.h> /* memset ... */
+#include <cerrno>  /* errno ... */
+#include <climits> /* INT_MAX ... */
+#include <cstddef> /* offsetof ... */
+#include <cstdio>  /* FILE ... */
+#include <cstdlib> /* calloc ... */
+#include <cstring> /* memset ... */
 
 /**
 **  Link with the *.c* of ../plscsi/.
@@ -109,8 +109,8 @@ Sgio *newSgio(void) {
     /* Alloc and zero a new struct. */
 
     Sgio *sgio = (Sgio *)calloc(1, sizeof(Sgio));
-    if (sgio == NULL)
-        return NULL;
+    if (sgio == nullptr)
+        return nullptr;
 
     /* Choose defaults, say closed. */
 
@@ -127,7 +127,7 @@ Sgio *newSgio(void) {
 
     sgio->theExitInt     = -1;
     sgio->theLength      = -1;
-    sgio->theSenseChars  = NULL;
+    sgio->theSenseChars  = nullptr;
     sgio->theSenseLength = -1;
 
     sgio->theReadNameInt = 0;
@@ -142,9 +142,9 @@ Sgio *newSgio(void) {
 **/
 
 void sgioSetErr(Sgio *sgio, FILE *fi) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return;
-    if (fi == NULL)
+    if (fi == nullptr)
         fi = stderr;
     sgio->theErrFile = fi;
 }
@@ -156,7 +156,7 @@ void sgioSetErr(Sgio *sgio, FILE *fi) {
 **/
 
 void sgioClose(Sgio *sgio) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return;
     int fd = sgio->theFileDescriptor;
     if (0 <= fd) {
@@ -176,9 +176,9 @@ void sgioClose(Sgio *sgio) {
 **/
 
 int sgioOpen(Sgio *sgio, char const *name) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return -1;
-    if (name == NULL)
+    if (name == nullptr)
         return -1;
 
     /* Close always. */
@@ -225,7 +225,7 @@ int sgioOpen(Sgio *sgio, char const *name) {
 **/
 
 int sgioLimitSense(Sgio *sgio, int maxSenseLength) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return -1;
 
     if ((0 <= maxSenseLength) && (maxSenseLength <= MAX_SENSE_LENGTH)) {
@@ -260,7 +260,7 @@ static int toMilliSeconds(int s, int ns) {
 **/
 
 int sgioLimitSeconds(Sgio *sgio, int s, int ns) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return -1;
 
     /* Round up to whole seconds, let negative mean max. */
@@ -286,7 +286,7 @@ int sgioLimitSeconds(Sgio *sgio, int s, int ns) {
 
 static int sgioSetCommand(Sgio *sgio, char const *cdbChars, int cdbLength, char *dataChars,
                           int maxLength, int direction) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return -1;
 
     /* Fetch implicit args. */
@@ -295,11 +295,11 @@ static int sgioSetCommand(Sgio *sgio, char const *cdbChars, int cdbLength, char 
 
     /* Constrain args. */
 
-    if ((cdbChars == NULL) && (cdbLength != 0))
+    if ((cdbChars == nullptr) && (cdbLength != 0))
         return -1;
     if ((cdbLength < 0) || (MAX_CDB_LENGTH < cdbLength))
         return -1;
-    if ((dataChars == NULL) && (maxLength != 0))
+    if ((dataChars == nullptr) && (maxLength != 0))
         return -1;
     if ((maxSenseLength < 0) || (MAX_SENSE_LENGTH < maxSenseLength))
         return -1;
@@ -343,8 +343,8 @@ static int sgioSetCommand(Sgio *sgio, char const *cdbChars, int cdbLength, char 
 
     case X0_DATA_NOT:
     default:
-        sih->dxferp          = NULL;
-        sih->dxferp          = dataChars; /* maybe NULL */
+        sih->dxferp          = nullptr;
+        sih->dxferp          = dataChars; /* maybe nullptr */
         sih->dxfer_len       = 0;
         sih->dxfer_len       = maxLength; /* often zero */
         sih->dxfer_direction = SG_DXFER_NONE;
@@ -373,7 +373,7 @@ static int sgioSetCommand(Sgio *sgio, char const *cdbChars, int cdbLength, char 
 **/
 
 static int sgioSayForMilliSeconds(Sgio *sgio, int ms) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return -1;
     if (ms < 0)
         return -1;
@@ -406,7 +406,7 @@ static int sgioSayForMilliSeconds(Sgio *sgio, int ms) {
 
 int sgioSay(Sgio *sgio, char const *cdbChars, int cdbLength, char *dataChars, int maxLength,
             int direction) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return -1;
     if (sgio->theFileDescriptor < 0)
         return 0;
@@ -416,7 +416,7 @@ int sgioSay(Sgio *sgio, char const *cdbChars, int cdbLength, char *dataChars, in
 
     sgio->theExitInt     = -1;
     sgio->theLength      = -1;
-    sgio->theSenseChars  = NULL;
+    sgio->theSenseChars  = nullptr;
     sgio->theSenseLength = -1;
 
     /* Remember what to say. */
@@ -498,7 +498,7 @@ int sgioSay(Sgio *sgio, char const *cdbChars, int cdbLength, char *dataChars, in
 **/
 
 int sgioGetLength(Sgio *sgio, int elseLength) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return elseLength;
     int length = sgio->theLength;
     if (length < 0)
@@ -519,7 +519,7 @@ int sgioGetLength(Sgio *sgio, int elseLength) {
 **/
 
 int sgioGetSense(Sgio *sgio, char *chars, int charsLength, int elseLength) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return 0;
 
     /* Guess the elseLength if the length of sense bytes copied is unknown. */
@@ -533,7 +533,7 @@ int sgioGetSense(Sgio *sgio, char *chars, int charsLength, int elseLength) {
     int copyLength = length;
     if (charsLength < copyLength)
         copyLength = charsLength;
-    if ((chars != NULL) && (0 < copyLength)) {
+    if ((chars != nullptr) && (0 < copyLength)) {
         (void)memmove(chars, sgio->theSenseChars, copyLength);
     }
 
@@ -555,7 +555,7 @@ int sgioGetSense(Sgio *sgio, char *chars, int charsLength, int elseLength) {
 **/
 
 int sgioReadName(Sgio *sgio, char *chars, int charsLength) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return -1;
 
     /* Close always. */
@@ -587,7 +587,7 @@ int sgioReadName(Sgio *sgio, char *chars, int charsLength) {
 
     int copyLength = (strlen(name) + 1);
 
-    if (chars != NULL)
+    if (chars != nullptr)
         if (copyLength <= charsLength) {
             (void)memmove(chars, &name[0], copyLength);
             return copyLength;
@@ -605,9 +605,9 @@ int sgioReadName(Sgio *sgio, char *chars, int charsLength) {
 **/
 
 int sgioSwallowArg(Sgio *sgio, char const *arg) {
-    if (sgio == NULL)
+    if (sgio == nullptr)
         return -1;
-    if (arg == NULL)
+    if (arg == nullptr)
         return -1;
 
     if (strcmp(arg, "SGIO") == 0) {

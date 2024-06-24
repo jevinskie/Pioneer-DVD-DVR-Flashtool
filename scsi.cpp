@@ -67,12 +67,12 @@ Scsi *newScsi(void) {
     /* Alloc and zero a new Scsi. */
 
     Scsi *scsi = (Scsi *)calloc(1, sizeof(Scsi));
-    if (scsi == NULL)
-        return NULL;
+    if (scsi == nullptr)
+        return nullptr;
 
     /* Say closed but allow open. */
 
-    scsi->theConnection = NULL;
+    scsi->theConnection = nullptr;
 #ifdef STUC
     scsi->theStuc = newStuc();
 #endif
@@ -97,7 +97,7 @@ Scsi *newScsi(void) {
 **/
 
 void scsiSetErr(Scsi *scsi, FILE *fi) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return;
 #ifdef STUC
     stucSetErr(scsi->theStuc, fi);
@@ -118,7 +118,7 @@ void scsiSetErr(Scsi *scsi, FILE *fi) {
 **/
 
 void scsiClose(Scsi *scsi) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return;
 #ifdef STUC
     stucClose(scsi->theStuc);
@@ -132,7 +132,7 @@ void scsiClose(Scsi *scsi) {
 #ifdef SPTX
     sptxClose(scsi->theSptx);
 #endif
-    scsi->theConnection = NULL;
+    scsi->theConnection = nullptr;
 }
 
 /**
@@ -142,9 +142,9 @@ void scsiClose(Scsi *scsi) {
 **/
 
 int scsiOpen(Scsi *scsi, char const *name) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return -1;
-    scsi->theConnection = NULL;
+    scsi->theConnection = nullptr;
 #ifdef STUC
     if (stucOpen(scsi->theStuc, name) == 0) {
         scsi->theConnection = scsi->theStuc;
@@ -179,7 +179,7 @@ int scsiOpen(Scsi *scsi, char const *name) {
 **/
 
 int scsiLimitSense(Scsi *scsi, int maxSenseLength) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return -1;
 #ifdef STUC
     if (scsi->theConnection == scsi->theStuc) {
@@ -217,7 +217,7 @@ int scsiLimitSense(Scsi *scsi, int maxSenseLength) {
 **/
 
 int scsiLimitSeconds(Scsi *scsi, INT s, INT ns) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return -1;
 #ifdef STUC
     if (scsi->theConnection == scsi->theStuc) {
@@ -266,7 +266,7 @@ int scsiLimitSeconds(Scsi *scsi, INT s, INT ns) {
 
 INT scsiSay(Scsi *scsi, char const *cdbChars, int cdbLength, char *dataChars, INT maxLength,
             int direction) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return -1;
 
 #if CHECK_CDB_LENGTH
@@ -355,7 +355,7 @@ INT scsiSay(Scsi *scsi, char const *cdbChars, int cdbLength, char *dataChars, IN
 **/
 
 INT scsiGetLength(Scsi *scsi, INT elseLength) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return elseLength;
 #ifdef STUC
     if (scsi->theConnection == scsi->theStuc) {
@@ -397,7 +397,7 @@ INT scsiGetLength(Scsi *scsi, INT elseLength) {
 **/
 
 int scsiGetSense(Scsi *scsi, char *chars, int charsLength, int elseLength) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return 0;
 #ifdef STUC
     if (scsi->theConnection == scsi->theStuc) {
@@ -437,7 +437,7 @@ int scsiGetSense(Scsi *scsi, char *chars, int charsLength, int elseLength) {
 **/
 
 int scsiReadName(Scsi *scsi, char *chars, int charsLength) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return -1;
 
     int exitInt = 0;
@@ -472,9 +472,9 @@ int scsiReadName(Scsi *scsi, char *chars, int charsLength) {
 **/
 
 int scsiSwallowArg(Scsi *scsi, char const *arg) {
-    if (scsi == NULL)
+    if (scsi == nullptr)
         return -1;
-    if (arg == NULL)
+    if (arg == nullptr)
         return -1;
 
     int exitInt = -1;
@@ -492,7 +492,7 @@ int scsiSwallowArg(Scsi *scsi, char const *arg) {
     int aspiInt = aspiSwallowArg(scsi->theAspi, arg);
     if (0 <= aspiInt) {
 #ifdef SPTX
-        scsi->theSptx = NULL;
+        scsi->theSptx = nullptr;
 #endif
         exitInt = 0;
     }
@@ -501,7 +501,7 @@ int scsiSwallowArg(Scsi *scsi, char const *arg) {
     int sptxInt = sptxSwallowArg(scsi->theSptx, arg);
     if (0 <= sptxInt) {
 #ifdef XXXASPI
-        scsi->theAspi = NULL;
+        scsi->theAspi = nullptr;
 #endif
         exitInt = 0;
     }
