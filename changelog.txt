@@ -24,9 +24,9 @@ New features:
 v2.5.1 - Bugfix release
 New features:
  o prevented to flash wrong interface type firmware (PATA/SATA mismatch)
- o added -l option to list non Pioneer drives 
+ o added -l option to list non Pioneer drives
 Fixes:
- o Fixed MAC drive detection problem occuring when several 
+ o Fixed MAC drive detection problem occuring when several
    drives are connected
  o Fixed MAC problem with 'a:' style drive access
  o Added readme files from v2.2 release
@@ -34,13 +34,13 @@ Fixes:
 
 v2.5 - "Adding current drives" release
 New features:
- o DVR-111 support 
- o DVR-112 support 
- o DVR-115 support 
+ o DVR-111 support
+ o DVR-112 support
+ o DVR-115 support
  o DVR-212 support
- o DVR-215 support 
+ o DVR-215 support
  o Additional check sum test
-Fixes: 
+Fixes:
  o Major internal cleanup
 Known problems:
  o DOS version not tested yet

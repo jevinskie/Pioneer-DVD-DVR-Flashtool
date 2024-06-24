@@ -41,25 +41,25 @@ typedef unsigned int UINT;
 #define MEMMOVE memmove
 #define MEMSET memset
 
-#define TO_VOID_P(II) ((void *) (II))
-#define TO_INT(VO) ((INT) (VO))
+#define TO_VOID_P(II) ((void *)(II))
+#define TO_INT(VO) ((INT)(VO))
 
 /**
 **  List some different ways to copy data.
 **/
 
-#define X0_DATA_NOT     0x0
-#define X1_DATA_IN      0x1 /* read = copy IN to host from device */
-#define X2_DATA_OUT     0x2 /* write = copy OUT from host to device */
+#define X0_DATA_NOT 0x0
+#define X1_DATA_IN 0x1  /* read = copy IN to host from device */
+#define X2_DATA_OUT 0x2 /* write = copy OUT from host to device */
 
 /**
 **  Distinguish one negative return code from another, in accord with
 **  an anonymous convention seen used in the Scsi storage industry.
 **/
 
-#define X2000_DIFFERENCE    0x2000 /* data copied In != data copied Out */
-#define X0100_RESIDUE       0x0100 /* copied less than max data In or Out */
-#define X0002_SENSE         0x0002 /* did copy In sense data */
+#define X2000_DIFFERENCE 0x2000 /* data copied In != data copied Out */
+#define X0100_RESIDUE 0x0100    /* copied less than max data In or Out */
+#define X0002_SENSE 0x0002      /* did copy In sense data */
 
 /**
 **  Choose which .cpp to link.
@@ -70,8 +70,6 @@ typedef unsigned int UINT;
 #else
 #error only Linux supported, sorry
 #endif
-
-
 
 /**
 **  Name some struct's.
@@ -85,12 +83,11 @@ typedef struct Sgio Sgio;
 typedef struct Sptx Sptx;
 typedef struct Stuc Stuc;
 
-
 /**
 **  Link with "scsi.cpp".
 **/
 
-extern Scsi * newScsi(void);
+extern Scsi *newScsi(void);
 extern void scsiSetErr(Scsi *, FILE *);
 extern void scsiClose(Scsi *);
 extern int scsiOpen(Scsi *, char const *);
@@ -111,7 +108,7 @@ extern int scsiSwallowArg(Scsi *, char const *);
 #endif
 
 #ifdef SGIO
-extern Sgio * newSgio(void);
+extern Sgio *newSgio(void);
 extern void sgioSetErr(Sgio *, FILE *);
 extern void sgioClose(Sgio *);
 extern int sgioOpen(Sgio *, char const *);
