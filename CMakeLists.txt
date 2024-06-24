@@ -67,7 +67,7 @@ set(CMAKE_CXX_EXTENSIONS YES)
 
 add_subdirectory(3rdparty)
 
-add_executable(pioneer-dvd-dvr-flash-utils scsi.cpp sgio.cpp pioneer-dvd-dvr-flash-utils.cpp)
+add_executable(pioneer-dvd-dvr-flash-utils scsi.cpp sgio.cpp utils.cpp pioneer-dvd-dvr-flash-utils.cpp)
 
 target_link_libraries(pioneer-dvd-dvr-flash-utils fmt)
 target_compile_options(pioneer-dvd-dvr-flash-utils PRIVATE -Wall -Wextra -Wpedantic)

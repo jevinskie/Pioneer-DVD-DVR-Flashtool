@@ -21,6 +21,7 @@
 #include <fmt/format.h>
 
 #include "plscsi.h"
+#include "utils.h"
 
 using u8  = uint8_t;
 using u16 = uint16_t;
@@ -567,6 +568,9 @@ int getInquiry(Scsi *scsi, char *vendor, char *model, char *revision) {
     cdb[4] = 0x60;
 
     result = scsiSay(scsi, (char *)cdb, 6, (char *)mbuffer, 0x60, X1_DATA_IN);
+    fprintf(stderr, "getInquiry mbuffer hexdump:\n");
+    hexdump(mbuffer, 0x60);
+    fprintf(stderr, "\n");
     if (result || (mbuffer[39] != '/') || (mbuffer[42] != '/'))
         // We did not read 60 bytes or the date is not right - probably not a DVR
         return 0;
@@ -984,9 +988,18 @@ int main(int argc, char *argv[]) {
     printf("   Description : %s\n", id.Desc);
     printf("  Firmware Rev : %s\n", id.Rev);
 
-    if (stat || (id.Date[2] != '/') ||
-        (id.Date[5] !=
-         '/')) { // We did not read 60 bytes or the date is not right - probably not a DVR
+    fprintf(stderr, "id hexdump:\n");
+    hexdump(&id, sizeof(id));
+    fprintf(stderr, "\n");
+    fprintf(stderr, "id.Date hexdump:\n");
+    hexdump(&id.Date, sizeof(id.Date));
+    fprintf(stderr, "\n");
+
+    if (stat ||
+        (!((id.Date[2] != '/') || (id.Date[5] != '/')) ||
+         !((id.Date[4] != '/') ||
+           (id.Date[8] !=
+            '/')))) { // We did not read 60 bytes or the date is not right - probably not a DVR
         printf("\nThis drive does not appear to be a Pioneer DVR drive - Aborting.\n");
         ERR_EXIT;
     }
@@ -1032,6 +1045,12 @@ int main(int argc, char *argv[]) {
     memcpy(idx.Kernel_Rev, mbuffer + 40, 4);
 
     if (opt_verbose) {
+        fprintf(stderr, "DVR/DVD specific info mbuffer hexdump:\n");
+        hexdump(mbuffer, 0x30);
+        fprintf(stderr, "\n");
+        fprintf(stderr, "DVR/DVD specific info idx hexdump:\n");
+        hexdump(&idx, sizeof(idx));
+        fprintf(stderr, "\n");
         printf("Additional Drive Information:\n");
         if (!is_kernel)
             printf(" Serial Number : %s\n", idx.Serial);
